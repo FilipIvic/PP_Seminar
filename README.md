@@ -4,6 +4,7 @@ College task for Parallel Processing class - Sobel filter using CUDA
 ## How to use
 
 nvcc sobel.cu -o cudaProgram
+
 ./cudaProgram 
 
 NOTE:
