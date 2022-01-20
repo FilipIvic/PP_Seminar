@@ -19,13 +19,13 @@ __global__ void sobel_gpu(float* image1, float* image2, int w, int h) {
 
     if (x > 0 && y > 0 && x < w - 1 && y < h - 1){
 
-        dx = (1 * image1[(y - 1) * w + (x - 1)]) + (-1 * image1[(y + 1) * w + (x - 1)]) + 
-			 (2 * image1[(y - 1) * w + (x    )]) + (-2 * image1[(y + 1) * w + (x    )]) + 
-			 (1 * image1[(y - 1) * w + (x + 1)]) + (-1 * image1[(y + 1) * w + (x + 1)]);
+        dx = (1 * image1[(y - 1) * w + (x - 1)]) + (-1 * image1[(y - 1) * w + (x + 1)]) + 
+			 (2 * image1[(y    ) * w + (x - 1)]) + (-2 * image1[(y    ) * w + (x + 1)]) + 
+			 (1 * image1[(y + 1) * w + (x - 1)]) + (-1 * image1[(y + 1) * w + (x + 1)]);
 			 
 			 
-		dy = ( 1 * image1[(y - 1) * w + (x - 1)]) + ( 2 * image1[(y    ) * w + (x - 1)]) + ( 1 * image1[(y + 1) * w + (x - 1)]) +
-			 (-1 * image1[(y - 1) * w + (x + 1)]) + (-2 * image1[(y    ) * w + (x + 1)]) + (-1 * image1[(y + 1) * w + (x + 1)]); 
+		dy = ( 1 * image1[(y - 1) * w + (x - 1)]) + ( 2 * image1[(y - 1) * w + (x    )]) + ( 1 * image1[(y - 1) * w + (x + 1)]) +
+			 (-1 * image1[(y + 1) * w + (x - 1)]) + (-2 * image1[(y + 1) * w + (x    )]) + (-1 * image1[(y + 1) * w + (x + 1)]); 
 		
 
         image2[y * w + x] = sqrt((dx * dx) + (dy * dy));
