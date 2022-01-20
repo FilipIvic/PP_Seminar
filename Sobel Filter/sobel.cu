@@ -19,15 +19,14 @@ __global__ void sobel_gpu(float* image1, float* image2, int w, int h) {
 
     if (x > 0 && y > 0 && x < w - 1 && y < h - 1){
 
-
-        dy = (image1[(y - 1) * w + (x - 1)]) + (2 * image1[(y - 1) * w + x]) + (image1[(y - 1) * w + (x + 1)]) +
-            (-1 * image1[(y + 1) * w + (x - 1)]) + (-2 * image1[(y + 1) * w + x]) + (-1 * image1[(y + 1) * w + (x + 1)]);
-
-        dx = (-1 * image1[(y - 1) * w + (x - 1)]) + (-2 * image1[y * w + (x - 1)]) 
-            + (-1 * image1[(y + 1) * w + (x - 1)]) + (image1[(y - 1) * w + (x + 1)]) 
-            + (2 * image1[y * w + (x + 1)]) + (image1[(y + 1) * w + (x + 1)]);
-
-       
+        dx = (1 * image1[(y - 1) * w + (x - 1)]) + (-1 * image1[(y + 1) * w + (x - 1)]) + 
+			 (2 * image1[(y - 1) * w + (x    )]) + (-2 * image1[(y + 1) * w + (x    )]) + 
+			 (1 * image1[(y - 1) * w + (x + 1)]) + (-1 * image1[(y + 1) * w + (x + 1)]);
+			 
+			 
+		dy = ( 1 * image1[(y - 1) * w + (x - 1)]) + ( 2 * image1[(y    ) * w + (x - 1)]) + ( 1 * image1[(y + 1) * w + (x - 1)]) +
+			 (-1 * image1[(y - 1) * w + (x + 1)]) + (-2 * image1[(y    ) * w + (x + 1)]) + (-1 * image1[(y + 1) * w + (x + 1)]); 
+		
 
         image2[y * w + x] = sqrt((dx * dx) + (dy * dy));
     }
@@ -39,17 +38,16 @@ __host__ void sobel_cpu(float image1[1024][1024], float image3[1024][1024], int 
 
     float dx, dy;
 
-    for (int i = 0; i < w-2; i++) {
-        for (int j = 0; j < h-2; j++) {
+    for (int i = 1; i < w-1; i++) {
+        for (int j = 1; j < h-1; j++) {
 
+				dx = (1 * image1[i - 1][j - 1]) + (-1 * image1[i - 1][j + 1])
+                   + (2 * image1[i    ][j - 1]) + (-2 * image1[i    ][j + 1])
+                   + (1 * image1[i + 1][j - 1]) + (-1 * image1[i + 1][j + 1]);
            
-                dy = (-1 * image1[i][j]) + (-2 * image1[i][j+1]) + (-1 * image1[i][j+2]) +
-                    (1 * image1[i+2][j]) + (2 * image1[i+2][j+1]) + (image1[i+2][j+2]);
+                dy = (1 * image1[i - 1][j - 1]) + ( 2 * image1[i - 1][j]) + ( 1 * image1[i - 1][j + 1]) +
+                    (-1 * image1[i + 1][j - 1]) + (-2 * image1[i + 1][j]) + (-1 * image1[i + 1][j + 1]);
 
-
-                dx = (-1 * image1[i][j]) + (1 * image1[i][j + 2])
-                    + (-2* image1[i+1][j]) + (2 * image1[i+1][j+2])
-                    + (-1 * image1[i+2][j]) + (1 * image1[i+2][j+2]);
 
                 image3[i][j] = sqrt((dx * dx) + (dy * dy));
         }
@@ -91,8 +89,8 @@ int main() {
         }
     }
 
-    dim3  threadsPerBlock(16, 16);  //1024x1024
-    dim3  numBlocks(64, 64);        //16*64 = 1024  /32*32
+    dim3  threadsPerBlock(16, 16);
+    dim3  numBlocks(64, 64);
 
     printf("\nPOCETAK: Sobel filtra na GPU\n");
     //Funkcija <<<dimGrid, dimBlock>>>
